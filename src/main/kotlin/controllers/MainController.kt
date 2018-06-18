@@ -15,6 +15,6 @@ class MainController {
     lateinit var debugText: Label
 
     fun initialize() {
-        minesGPane.autoResize()
+        minesGPane.createCells(30,30)
     }
 }

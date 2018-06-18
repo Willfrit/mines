@@ -14,10 +14,9 @@ class MainApp : Application() {
     override fun start(stage: Stage) {
         val loader = FXMLLoader(javaClass.getResource("/main_pane.fxml"))
         val root = loader.load<Parent>()
-        val primaryScreenBounds = Screen.getPrimary().visualBounds
-        val scene = Scene(root, primaryScreenBounds.width * RATIO_WINDOWS, primaryScreenBounds.height * RATIO_WINDOWS)
+        val scene = Scene(root, WIDTH_WINDOW, HEIGHT_WINDOW)
         stage.scene = scene
-        stage.isResizable = false
+        stage.isResizable = true
         stage.title = "Mines IA"
         stage.show()
     }
@@ -28,6 +27,9 @@ class MainApp : Application() {
             launch(MainApp::class.java)
         }
 
-        const val RATIO_WINDOWS = 0.8
+        const val RATIO_WINDOWS = 0.9
+        val SCREEN_BOUND = Screen.getPrimary().visualBounds!!
+        val WIDTH_WINDOW = SCREEN_BOUND.width * RATIO_WINDOWS
+        val HEIGHT_WINDOW = SCREEN_BOUND.height * RATIO_WINDOWS
     }
 }
