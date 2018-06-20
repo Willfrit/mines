@@ -1,20 +1,24 @@
-package main.kotlin.controllers
+package controllers
 
+import controllers.GridMines
 import javafx.fxml.FXML
 import javafx.scene.control.Label
-import kotlin.math.max
-import kotlin.math.min
+import javafx.scene.layout.VBox
 
 
 class MainController {
 
     @FXML
-    lateinit var minesGPane: GridMines
+    lateinit var boxGridMines: VBox
 
     @FXML
     lateinit var debugText: Label
 
+    var gridMines = GridMines(10,10)
+
     fun initialize() {
-        minesGPane.createCells(30,30)
+
+        boxGridMines.children.addAll(gridMines)
+        gridMines.show()
     }
 }

@@ -1,4 +1,4 @@
-package main.kotlin.models
+package models
 
 import java.lang.Exception
 

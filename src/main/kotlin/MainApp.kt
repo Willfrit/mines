@@ -1,9 +1,6 @@
-package main.kotlin
-
 import javafx.application.Application
 import javafx.fxml.FXMLLoader
 import javafx.stage.Stage
-import main.kotlin.controllers.MainController
 import javafx.scene.Scene
 import javafx.scene.Parent
 import javafx.stage.Screen
