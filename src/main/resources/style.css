@@ -1,0 +1,8 @@
+.button:disabled, .button:disabled > * {
+  -fx-opacity: 1.0;
+}
+
+.button {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}

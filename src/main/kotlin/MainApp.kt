@@ -10,12 +10,15 @@ class MainApp : Application() {
 
     override fun start(stage: Stage) {
         val loader = FXMLLoader(javaClass.getResource("/main_pane.fxml"))
+
         val root = loader.load<Parent>()
         val scene = Scene(root, WIDTH_WINDOW, HEIGHT_WINDOW)
+        scene.stylesheets.add(javaClass.getResource("/style.css").toExternalForm())
         stage.scene = scene
         stage.isResizable = true
         stage.title = "Mines IA"
         stage.show()
+        root.requestFocus()
     }
 
     companion object {

@@ -14,7 +14,7 @@ import kotlin.math.min
 
 class GridMines(private val x: Int, private val y:Int) : GridPane() {
 
-    val cellsBtn: Array<Array<MineBtn?>> = Array(x, { arrayOfNulls<MineBtn>(y) })
+    private val cellsBtn: Array<Array<MineBtn?>> = Array(x, { arrayOfNulls<MineBtn>(y) })
 
     private fun autoResize() {
         prefHeight = MainApp.HEIGHT_WINDOW - 100
@@ -22,6 +22,7 @@ class GridMines(private val x: Int, private val y:Int) : GridPane() {
     }
 
     fun show() {
+
         autoResize()
 
         val mSize = min((prefHeight - (vgap * y)) / y.toDouble(), (prefWidth - (hgap * x)) / x.toDouble())
@@ -42,17 +43,38 @@ class GridMines(private val x: Int, private val y:Int) : GridPane() {
                 btn.style = "-fx-font-size: " + fontSize.toString() + ";-fx-padding:0px;-fx-background-size:0px;"
 
                 btn.onAction = EventHandler<ActionEvent> {
-                    btn.value = 4.toString()
+                    selectCell(btn)
                 }
 
                 btn.onMouseClicked = EventHandler<MouseEvent> {
-                    if (it.button == MouseButton.SECONDARY) btn.value = 1.toString()
+                    if (it.button == MouseButton.SECONDARY) warningCell(btn)
                 }
                 cellsBtn[i][j] = btn
 
                 add(btn, i, j, 1, 1)
             }
         }
+
+    }
+
+    fun selectCell(x: Int, y: Int){
+        selectCell(cellsBtn[x][y]!!)
+    }
+
+    fun warningCell(x: Int, y: Int){
+        warningCell(cellsBtn[x][y]!!)
+    }
+
+    fun selectCell(cellBtn: MineBtn){
+        cellBtn.value = 4.toString()
+        cellBtn.isDisable = true
+        this.requestFocus()
+    }
+
+    fun warningCell(cellBtn: MineBtn){
+        cellBtn.value = 1.toString()
+        cellBtn.isDisable = true
+        this.requestFocus()
     }
 
 }
