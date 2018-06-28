@@ -5,33 +5,35 @@ import java.lang.Exception
 class LossGameException(override var message: String) : Exception(message)
 class WinGameException(override var message: String) : Exception(message)
 
-class MinesGame(val x: Int, val y: Int, val nbMines: Int) {
+class MinesGame(val colNb: Int, val rowNb: Int, val nbMines: Int) {
 
     constructor (x: Int, y: Int, ratioMines: Double) : this(x, y, ((x * y) * ratioMines).toInt())
 
-    private val cellsValue: Array<Array<Int>> = Array(x) { Array(y) { 0 } }
+    private val cellsValue: Array<Array<Cell>> = Array(colNb) { Array(rowNb) { Cell(0) } }
 
     var nbTurn = 0
 
     init {
-        if (x < 0 || y < 0 || nbMines < 1 || nbMines > x * y - 1 || nbMines < 10) {
-            throw Exception("Bad parameter for the game x : " + x.toString() + ", y : " + y.toString() + ", nbMines : " + nbMines)
+        if (colNb < 0 || rowNb < 0 || nbMines < 1 || nbMines > colNb * rowNb - 1 || colNb * rowNb - nbMines < 10) {
+            throw Exception("Bad parameter for the game colNb : " + colNb.toString() + ", rowNb : " + rowNb.toString() + ", nbMines : " + nbMines)
         }
 
     }
 
-    fun chooseCell(x: Int, y: Int): List<Triple<Int, Int, Int>> {
-        println("Choose x : " + x.toString() + " ,  y : " + y.toString())
-        if (nbTurn == 0) firstTurnInit(x, y)
-        val visibleCell: MutableList<Triple<Int, Int, Int>> = MutableList(0) { Triple(0,0,0) }
+    fun chooseCell(x: Int, y: Int): List<Triple<Int, Int, Cell>> {
+        println("Choose colNb : " + x.toString() + " ,  rowNb : " + y.toString())
+        if (nbTurn == 0) {
+            firstTurnInit(x, y)
+        }
+        val visibleCell: List<Triple<Int, Int, Cell>> = discoverCell(x, y)
 
         // Debug
-        for (i in 0 until this.x)
-            for (j in 0 until this.y)
-                visibleCell.add(Triple(i,j,cellsValue[i][j]))
+//        for (i in 0 until this.colNb)
+//            for (j in 0 until this.rowNb)
+//                visibleCell.add(Triple(i, j, cellsValue[i][j]))
 
 
-        if (cellsValue[x][y] == -1) {
+        if (cellsValue[x][y].isMine()) {
             throw LossGameException("Loss")
         }
 
@@ -39,10 +41,81 @@ class MinesGame(val x: Int, val y: Int, val nbMines: Int) {
         return visibleCell
     }
 
+    private fun discoverCell(x: Int, y: Int): List<Triple<Int, Int, Cell>> {
+        val discovered = mutableSetOf<Triple<Int, Int, Cell>>()
+
+        val queue = mutableListOf<Pair<Int, Int>>()
+        val root = cellsValue[x][y]
+        if (root.isSafe()) {
+            queue.add(Pair(x, y))
+        }
+
+        discovered.add(Triple(x, y, root))
+
+        while (queue.isNotEmpty()) {
+            val current = queue.removeAt(0)
+            neighborsCell(current.first, current.second).forEach {
+                val cell = cellsValue[it.first][it.second]
+                if (!discovered.contains(Triple(it.first, it.second, cell))) {
+                    discovered.add(Triple(it.first, it.second, cell))
+                    if (cell.isSafe()) {
+                        queue.add(Pair(it.first, it.second))
+                    }
+                }
+            }
+        }
+
+        return discovered.toList()
+    }
+
+    private fun neighborsCell(x: Int, y: Int): List<Pair<Int, Int>> {
+        val neighbors = mutableListOf<Pair<Int, Int>>()
+
+        // above-right -
+        if (x > 0 && y > 0) neighbors.add(Pair(x - 1, y - 1))
+        // above -
+        if (y > 0) neighbors.add(Pair(x, y - 1))
+        // above-left -
+        if (x < colNb - 1 && y > 0) neighbors.add(Pair(x + 1, y - 1))
+        // left
+        if (x > 0) neighbors.add(Pair(x - 1, y))
+        // right
+        if (x < colNb - 1) neighbors.add(Pair(x + 1, y))
+        // below-right
+        if (x > 0 && y < rowNb - 1) neighbors.add(Pair(x - 1, y + 1))
+        // below
+        if (y < rowNb - 1) neighbors.add(Pair(x, y + 1))
+        // below-left
+        if (x < colNb - 1 && y < rowNb - 1) neighbors.add(Pair(x + 1, y + 1))
+
+        return neighbors
+    }
+
     private fun firstTurnInit(x: Int, y: Int) {
-        val freeCell: MutableList<Pair<Int, MutableList<Int>>> = MutableList(this.x)
+        placeMines(x, y)
+        createNumCell()
+    }
+
+    private fun createNumCell() {
+        for (x in 0 until this.colNb) {
+            for (y in 0 until this.rowNb) {
+                if (cellsValue[x][y].isMine()) continue
+
+                var nbMineNext = 0
+                neighborsCell(x, y).forEach {
+                    if (cellsValue[it.first][it.second].isMine())
+                        nbMineNext++
+                }
+
+                cellsValue[x][y] = Cell(nbMineNext)
+            }
+        }
+    }
+
+    private fun placeMines(x: Int, y: Int) {
+        val freeCell: MutableList<Pair<Int, MutableList<Int>>> = MutableList(this.colNb)
         { i ->
-            Pair(i, MutableList(this.y) { j -> j })
+            Pair(i, MutableList(this.rowNb) { j -> j })
         }
         freeCell.filter { it.first == x || it.first == x + 1 || it.first == x - 1 }
                 .forEach {
@@ -53,7 +126,7 @@ class MinesGame(val x: Int, val y: Int, val nbMines: Int) {
             freeCell.shuffle()
             freeCell[0].second.shuffle()
 
-            cellsValue[freeCell[0].first][freeCell[0].second[0]] = -1
+            cellsValue[freeCell[0].first][freeCell[0].second[0]] = Cell.Mine()
 
             freeCell[0].second.removeAt(0)
             if (freeCell[0].second.size == 0) {

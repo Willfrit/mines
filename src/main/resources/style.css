@@ -1,4 +1,5 @@
 .button:disabled, .button:disabled > * {
   -fx-opacity: 1.0;
-  -fx-text-fill: grey;
+  -fx-text-fill: black;
+  -fx-background-color: transparent;
 }

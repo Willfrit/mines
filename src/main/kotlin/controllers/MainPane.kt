@@ -14,7 +14,7 @@ class MainPane {
     @FXML
     lateinit var debugText: Label
 
-    var gridMines = GridMines(10,10)
+    var gridMines = GridMines(30,30)
 
     fun initialize() {
 

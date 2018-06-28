@@ -11,12 +11,14 @@ import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import models.MinesGame
 import kotlin.math.min
+import javafx.animation.FadeTransition
+import javafx.util.Duration
 
 
 class GridMines(private val x: Int, private val y: Int) : GridPane() {
 
     private val cellsBtn: Array<Array<MineBtn?>> = Array(x) { arrayOfNulls<MineBtn>(y) }
-    private val game = MinesGame(x, y, 0.50)
+    private val game = MinesGame(x, y, 0.20)
 
     private fun autoResize() {
         prefHeight = MainApp.HEIGHT_WINDOW - 100
@@ -73,13 +75,11 @@ class GridMines(private val x: Int, private val y: Int) : GridPane() {
         val ret = game.chooseCell(cellBtn.cord.first, cellBtn.cord.second)
 
         ret.forEach {
-            var text = ""
-            if (it.third == -1) text = "Q"
-            cellsBtn[it.first][it.second]?.text = text
+            val text = it.third.toString()
+            cellsBtn[it.first][it.second]?.value = text
             cellsBtn[it.first][it.second]?.isDisable = true
-            println("Show x : " + it.first + ", y : " + it.second + ", v : " + it.third)
+            println("Show colNb : " + it.first + ", rowNb : " + it.second + ", v : " + it.third)
         }
-
 
         this.requestFocus()
     }
