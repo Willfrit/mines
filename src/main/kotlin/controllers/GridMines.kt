@@ -1,24 +1,22 @@
 package controllers
 
-import javafx.geometry.Pos
-import javafx.scene.control.Button
-import javafx.scene.layout.GridPane
-import javafx.scene.layout.VBox
 import MainApp
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
+import javafx.geometry.Pos
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
+import javafx.scene.layout.GridPane
+import models.LossGameException
 import models.MinesGame
+import models.WinGameException
 import kotlin.math.min
-import javafx.animation.FadeTransition
-import javafx.util.Duration
 
 
 class GridMines(private val x: Int, private val y: Int) : GridPane() {
 
     private val cellsBtn: Array<Array<MineBtn?>> = Array(x) { arrayOfNulls<MineBtn>(y) }
-    private val game = MinesGame(x, y, 0.20)
+    private val game = MinesGame(x, y, 0.10)
 
     private fun autoResize() {
         prefHeight = MainApp.HEIGHT_WINDOW - 100
@@ -72,13 +70,28 @@ class GridMines(private val x: Int, private val y: Int) : GridPane() {
 
     fun selectCell(cellBtn: MineBtn) {
 
-        val ret = game.chooseCell(cellBtn.cord.first, cellBtn.cord.second)
+        try {
+            val ret = game.chooseCell(cellBtn.cord.first, cellBtn.cord.second)
+            ret.forEach {
+                cellsBtn[it.first][it.second]?.found(it.third)
+                println("Show colNb : " + it.first + ", rowNb : " + it.second + ", v : " + it.third)
+            }
+        } catch (e : LossGameException) {
+            println("LOSS")
+            e.remained.forEach {
+                cellsBtn[it.first][it.second]?.found(it.third)
+                cellsBtn[it.first][it.second]?.style = cellsBtn[it.first][it.second]?.style + "-fx-text-fill:red;"
+            }
+        } catch (e: WinGameException) {
+            println("WIN")
+            e.discovered.forEach {
+                cellsBtn[it.first][it.second]?.found(it.third)
+                cellsBtn[it.first][it.second]?.style = cellsBtn[it.first][it.second]?.style + "-fx-text-fill:green;"
+            }
+            e.mines.forEach {
+                cellsBtn[it.first][it.second]?.found(it.third)
+            }
 
-        ret.forEach {
-            val text = it.third.toString()
-            cellsBtn[it.first][it.second]?.value = text
-            cellsBtn[it.first][it.second]?.isDisable = true
-            println("Show colNb : " + it.first + ", rowNb : " + it.second + ", v : " + it.third)
         }
 
         this.requestFocus()

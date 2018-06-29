@@ -2,14 +2,13 @@ package models
 
 import java.lang.Exception
 
-class LossGameException(override var message: String) : Exception(message)
-class WinGameException(override var message: String) : Exception(message)
-
 class MinesGame(val colNb: Int, val rowNb: Int, val nbMines: Int) {
 
     constructor (x: Int, y: Int, ratioMines: Double) : this(x, y, ((x * y) * ratioMines).toInt())
 
     private val cellsValue: Array<Array<Cell>> = Array(colNb) { Array(rowNb) { Cell(0) } }
+
+    private val alreadyDiscovered = mutableSetOf<Triple<Int, Int, Cell>>()
 
     var nbTurn = 0
 
@@ -22,23 +21,32 @@ class MinesGame(val colNb: Int, val rowNb: Int, val nbMines: Int) {
 
     fun chooseCell(x: Int, y: Int): List<Triple<Int, Int, Cell>> {
         println("Choose colNb : " + x.toString() + " ,  rowNb : " + y.toString())
+
         if (nbTurn == 0) {
             firstTurnInit(x, y)
         }
-        val visibleCell: List<Triple<Int, Int, Cell>> = discoverCell(x, y)
-
-        // Debug
-//        for (i in 0 until this.colNb)
-//            for (j in 0 until this.rowNb)
-//                visibleCell.add(Triple(i, j, cellsValue[i][j]))
-
 
         if (cellsValue[x][y].isMine()) {
-            throw LossGameException("Loss")
+            throw LossGameException("Loss", getRemainedCell())
+        }
+
+        val visibleCell: List<Triple<Int, Int, Cell>> = discoverCell(x, y)
+
+        if (alreadyDiscovered.size == (rowNb * colNb) - nbMines) {
+            throw WinGameException("Win", alreadyDiscovered.toList(), getRemainedCell(), nbTurn)
         }
 
         nbTurn++
         return visibleCell
+    }
+
+    private fun getRemainedCell() : List<Triple<Int, Int, Cell>> {
+        val remainCells: MutableList<Triple<Int, Int, Cell>> = MutableList(0) { Triple(0, 0, Cell(0)) }
+        for (i in 0 until this.colNb)
+            for (j in 0 until this.rowNb)
+                if (!alreadyDiscovered.contains(Triple(i,j, cellsValue[i][j])))
+                    remainCells.add(Triple(i, j, cellsValue[i][j]))
+        return remainCells
     }
 
     private fun discoverCell(x: Int, y: Int): List<Triple<Int, Int, Cell>> {
@@ -51,13 +59,17 @@ class MinesGame(val colNb: Int, val rowNb: Int, val nbMines: Int) {
         }
 
         discovered.add(Triple(x, y, root))
+        alreadyDiscovered.add(Triple(x, y, root))
 
         while (queue.isNotEmpty()) {
             val current = queue.removeAt(0)
             neighborsCell(current.first, current.second).forEach {
                 val cell = cellsValue[it.first][it.second]
                 if (!discovered.contains(Triple(it.first, it.second, cell))) {
+
                     discovered.add(Triple(it.first, it.second, cell))
+                    alreadyDiscovered.add(Triple(it.first, it.second, cell))
+
                     if (cell.isSafe()) {
                         queue.add(Pair(it.first, it.second))
                     }
@@ -126,7 +138,7 @@ class MinesGame(val colNb: Int, val rowNb: Int, val nbMines: Int) {
             freeCell.shuffle()
             freeCell[0].second.shuffle()
 
-            cellsValue[freeCell[0].first][freeCell[0].second[0]] = Cell.Mine()
+            cellsValue[freeCell[0].first][freeCell[0].second[0]] = Mine()
 
             freeCell[0].second.removeAt(0)
             if (freeCell[0].second.size == 0) {

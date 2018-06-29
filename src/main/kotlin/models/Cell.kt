@@ -1,16 +1,13 @@
 package models
 
-class Cell(val v: Int) {
-    companion object {
-        fun Mine(): Cell {
-            return Cell(-1)
-        }
-    }
+class Mine : Cell(-1)
+
+open class Cell(val v: Int) {
 
     override fun toString(): String {
         return when {
-            isMine() -> "Q"
-            v == 0 -> " "
+            isMine() -> "\u25CF"
+            v == 0 -> "·"
             else -> v.toString()
         }
     }
