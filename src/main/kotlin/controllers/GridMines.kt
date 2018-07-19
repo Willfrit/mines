@@ -7,35 +7,32 @@ import javafx.geometry.Pos
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.GridPane
+import javafx.scene.layout.VBox
 import models.LossGameException
 import models.MinesGame
 import models.WinGameException
 import kotlin.math.min
 
 
-class GridMines(private val x: Int, private val y: Int) : GridPane() {
+class GridMines(private val game: MinesGame, private val parent: VBox) : GridPane() {
 
-    private val cellsBtn: Array<Array<MineBtn?>> = Array(x) { arrayOfNulls<MineBtn>(y) }
-    private val game = MinesGame(x, y, 0.10)
-
-    private fun autoResize() {
-        prefHeight = MainApp.HEIGHT_WINDOW - 100
-        prefWidth = (MainApp.WIDTH_WINDOW * 0.7) - 20
-    }
+    private val cellsBtn: Array<Array<MineBtn?>> = Array(game.colNb) { arrayOfNulls<MineBtn>(game.rowNb) }
 
     fun show() {
 
-        autoResize()
-
-        val mSize = min((prefHeight - (vgap * y)) / y.toDouble(), (prefWidth - (hgap * x)) / x.toDouble())
-        val fontSize = (mSize - (mSize * 0.20))
-        println(fontSize)
+        prefHeight = parent.height
+        prefWidth = parent.width
         alignment = Pos.CENTER
         vgap = 1.0
         hgap = 1.0
 
-        for (i in 0 until x) {
-            for (j in 0 until y) {
+        val mSize = 0.98 * min((prefHeight - (vgap * game.rowNb)) / game.rowNb.toDouble(), (prefWidth - (hgap * game.colNb)) / game.colNb.toDouble())
+
+
+        val fontSize = (mSize - (mSize * 0.20))
+
+        for (i in 0 until game.colNb) {
+            for (j in 0 until game.rowNb) {
                 val btn = MineBtn(Pair(i, j))
                 btn.prefHeight = mSize
                 btn.prefWidth = mSize

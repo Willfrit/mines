@@ -5,22 +5,44 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
-<BorderPane style="-fx-border-color: black" fx:controller="controllers.MainPane"
-            xmlns:fx="http://javafx.com/fxml">
-    <padding>
-        <Insets top="5" right="5" bottom="5" left="5"/>
-    </padding>
-    <left>
-        <VBox fx:id="boxGridMines" style="-fx-border-color: black; -fx-border-width: 1;" alignment="CENTER">
 
-        </VBox>
-    </left>
-    <center>
-        <ScrollPane>
-            <BorderPane.margin>
-                <Insets bottom="5" left="5" right="5" top="5"/>
-            </BorderPane.margin>
-            <Label text="RGT" style="-fx-background-color: blue;" alignment="CENTER" fx:id="debugText"/>
-        </ScrollPane>
-    </center>
-</BorderPane>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.control.TextField?>
+<GridPane style="-fx-border-color: black" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="controllers.MainPane">
+    <padding>
+        <Insets bottom="5" left="5" right="5" top="5"/>
+    </padding>
+
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="80.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+    </rowConstraints>
+
+
+    <VBox fx:id="boxGridMines" style="-fx-border-color: black; -fx-border-width: 1;" GridPane.columnIndex="0"
+          GridPane.rowIndex="0">
+
+    </VBox>
+
+    <ScrollPane fx:id="settingsPane" GridPane.columnIndex="1" GridPane.rowIndex="0">
+        <BorderPane.margin>
+            <Insets bottom="5" left="5" right="5" top="5"/>
+        </BorderPane.margin>
+        <Label fx:id="xLabel" text="X : "/>
+        <TextField fx:id="xField" text="30"/>
+
+        <Label fx:id="yLabel" text="Y : "/>
+        <TextField fx:id="yField" text="30"/>
+
+        <Label fx:id="mineLabel" text="Ratio Mines : "/>
+        <TextField fx:id="mineField" text="0.20"/>
+
+        <Label fx:id="debugText" text="Debug"/>
+    </ScrollPane>
+</GridPane>

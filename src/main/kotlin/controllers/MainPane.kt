@@ -1,24 +1,61 @@
 package controllers
 
-import controllers.GridMines
 import javafx.fxml.FXML
 import javafx.scene.control.Label
+import javafx.scene.control.ScrollPane
+import javafx.scene.control.TextField
+import javafx.scene.layout.GridPane
 import javafx.scene.layout.VBox
+import models.MinesGame
 
 
-class MainPane {
+class MainPane : GridPane() {
 
     @FXML
     lateinit var boxGridMines: VBox
 
     @FXML
-    lateinit var debugText: Label
+    lateinit var settingsPane: ScrollPane
 
-    var gridMines = GridMines(20,20)
+    @FXML
+    lateinit var debugText: Label
+    @FXML
+    lateinit var xLabel: Label
+    @FXML
+    lateinit var xField: TextField
+
+    @FXML
+    lateinit var yLabel: Label
+    @FXML
+    lateinit var yField: TextField
+
+    @FXML
+    lateinit var mineLabel: Label
+    @FXML
+    lateinit var mineField: TextField
+
+
+    var game: MinesGame? = null
 
     fun initialize() {
-
-        boxGridMines.children.addAll(gridMines)
-        gridMines.show()
+        println("Init : " + height.toString())
+        boxGridMines.widthProperty().addListener { obs, oldVal, newVal ->
+            resizeGame()
+        }
+        boxGridMines.heightProperty().addListener { obs, oldVal, newVal ->
+            resizeGame()
+        }
     }
+
+    private fun resizeGame() {
+        if (boxGridMines.width < 1 || boxGridMines.height < 1) return
+        if (game == null){
+            game = MinesGame(30,30,0.20)
+            val gridMines = GridMines(game!!, boxGridMines)
+            boxGridMines.children.clear()
+            boxGridMines.children.addAll(gridMines)
+            gridMines.show()
+        }
+    }
+
 }
