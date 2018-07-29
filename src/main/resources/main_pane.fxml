@@ -1,48 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.VBox?>
-
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.control.TextField?>
-<GridPane style="-fx-border-color: black" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="controllers.MainPane">
-    <padding>
-        <Insets bottom="5" left="5" right="5" top="5"/>
-    </padding>
-
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import java.lang.String?>
+<GridPane prefHeight="396.0" style="-fx-border-color: black" xmlns:fx="http://javafx.com/fxml/1"
+          xmlns="http://javafx.com/javafx/2.2" fx:controller="controllers.MainPane">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="80.0"/>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0"/>
     </columnConstraints>
+    <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x1"/>
+    </padding>
+    <VBox fx:id="boxGridMines" style="-fx-border-color: black; -fx-border-width: 1;" GridPane.columnIndex="0"
+          GridPane.rowIndex="0"/>
+    <ScrollPane fx:id="settingsPane" GridPane.columnIndex="1" GridPane.rowIndex="0">
+        <VBox alignment="CENTER">
+            <children>
+                <VBox alignment="TOP_CENTER" spacing="2.0" VBox.margin="$x1">
+                    <children>
+                        <ComboBox>
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="Graphics"/>
+                                    <String fx:value="TCP"/>
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                        <HBox>
+                            <children>
+                                <Label text="Port : "/>
+                                <TextField id="portField" text="11042"/>
+                            </children>
+                        </HBox>
+
+                        <Button mnemonicParsing="false" text="Reset" fx:id="btnGameType"/>
+                    </children>
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x1"/>
+                    </padding>
+                </VBox>
+                <VBox alignment="TOP_CENTER" padding="$x1" spacing="2.0" VBox.margin="$x1">
+                    <children>
+                        <HBox>
+                            <children>
+                                <Label id="xLabel" text="X : "/>
+                                <TextField id="xField" text="30"/>
+                            </children>
+                        </HBox>
+                        <HBox>
+                            <children>
+                                <Label id="yLabel" text="Y : "/>
+                                <TextField id="yField" text="30"/>
+                            </children>
+                        </HBox>
+                        <HBox>
+                            <children>
+                                <Label id="mineLabel" text="Ratio Mines : "/>
+                                <TextField id="mineField" text="0.20" HBox.hgrow="ALWAYS"/>
+                            </children>
+                        </HBox>
+                        <Button mnemonicParsing="false" text="Submit" fx:id="btnGameSettings"/>
+                    </children>
+                </VBox>
+                <VBox padding="$x1" spacing="2.0" VBox.margin="$x1" VBox.vgrow="ALWAYS">
+                    <children>
+                        <Text VBox.vgrow="ALWAYS">
+                            <VBox.margin>
+                                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                            </VBox.margin>
+                        </Text>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </ScrollPane>
     <rowConstraints>
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
     </rowConstraints>
-
-
-    <VBox fx:id="boxGridMines" style="-fx-border-color: black; -fx-border-width: 1;" GridPane.columnIndex="0"
-          GridPane.rowIndex="0">
-
-    </VBox>
-
-    <ScrollPane fx:id="settingsPane" GridPane.columnIndex="1" GridPane.rowIndex="0">
-        <BorderPane.margin>
-            <Insets bottom="5" left="5" right="5" top="5"/>
-        </BorderPane.margin>
-        <Label fx:id="xLabel" text="X : "/>
-        <TextField fx:id="xField" text="30"/>
-
-        <Label fx:id="yLabel" text="Y : "/>
-        <TextField fx:id="yField" text="30"/>
-
-        <Label fx:id="mineLabel" text="Ratio Mines : "/>
-        <TextField fx:id="mineField" text="0.20"/>
-
-        <Label fx:id="debugText" text="Debug"/>
-    </ScrollPane>
 </GridPane>

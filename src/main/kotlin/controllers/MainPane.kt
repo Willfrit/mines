@@ -1,6 +1,7 @@
 package controllers
 
 import javafx.fxml.FXML
+import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.ScrollPane
 import javafx.scene.control.TextField
@@ -15,25 +16,25 @@ class MainPane : GridPane() {
     lateinit var boxGridMines: VBox
 
     @FXML
+    lateinit var btnGameType: Button
+
+    @FXML
     lateinit var settingsPane: ScrollPane
 
     @FXML
     lateinit var debugText: Label
-    @FXML
-    lateinit var xLabel: Label
+
     @FXML
     lateinit var xField: TextField
 
     @FXML
-    lateinit var yLabel: Label
-    @FXML
     lateinit var yField: TextField
 
     @FXML
-    lateinit var mineLabel: Label
-    @FXML
     lateinit var mineField: TextField
 
+    @FXML
+    lateinit var btnGameSettings: Button
 
     var game: MinesGame? = null
 
