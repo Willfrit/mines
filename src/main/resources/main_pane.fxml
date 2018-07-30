@@ -22,7 +22,7 @@
             <children>
                 <VBox alignment="TOP_CENTER" spacing="2.0" VBox.margin="$x1">
                     <children>
-                        <ComboBox>
+                        <ComboBox fx:id="cboxGameType">
                             <items>
                                 <FXCollections fx:factory="observableArrayList">
                                     <String fx:value="Graphics"/>
@@ -30,14 +30,14 @@
                                 </FXCollections>
                             </items>
                         </ComboBox>
-                        <HBox>
+                        <HBox visible="false" fx:id="hboxPort">
                             <children>
                                 <Label text="Port : "/>
-                                <TextField id="portField" text="11042"/>
+                                <TextField fx:id="portField" text="11042"/>
                             </children>
                         </HBox>
 
-                        <Button mnemonicParsing="false" text="Reset" fx:id="btnGameType"/>
+                        <Button mnemonicParsing="false" text="Reset" fx:id="btnGameInput"/>
                     </children>
                     <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x1"/>
@@ -68,7 +68,7 @@
                 </VBox>
                 <VBox padding="$x1" spacing="2.0" VBox.margin="$x1" VBox.vgrow="ALWAYS">
                     <children>
-                        <Text VBox.vgrow="ALWAYS">
+                        <Text VBox.vgrow="ALWAYS" fx:id="debugText">
                             <VBox.margin>
                                 <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
                             </VBox.margin>
